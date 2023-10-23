@@ -1,6 +1,6 @@
 import app from './app.js';
-import { authenticated, syncUp } from './config/database/database.js';
-import { envs } from './config/environments/environments.js';
+import { authenticated, syncUp } from './modules/config/database/database.js';
+import { envs } from './modules/config/environments/environments.js';
 
 async function main() {
   try {
