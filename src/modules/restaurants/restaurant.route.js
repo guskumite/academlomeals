@@ -11,17 +11,24 @@ import {
 } from './restaurant.controller.js';
 import { validExistRestaurant } from './restaurant.middleware.js';
 import { validExistReview } from '../reviews/review.middleware.js';
-import { protect, protectAccountOwner } from '../users/auth.middleware.js';
+import {
+  protect,
+  protectAccountOwner,
+  restrictTo,
+} from '../users/auth.middleware.js';
 
 export const router = express.Router();
 
-router.route('/').get(findAllRestaurants).post(createRestaurant);
+router
+  .route('/')
+  .get(findAllRestaurants)
+  .post(protect, restrictTo('admin'), createRestaurant);
 
 router
   .route('/:id')
   .get(findOneRestaurant)
-  .patch(updateRestaurant)
-  .delete(deleteRestaurant);
+  .patch(protect, restrictTo('admin'), updateRestaurant)
+  .delete(protect, restrictTo('admin'), deleteRestaurant);
 
 router.post('/reviews/:id', validExistRestaurant, createReviewToRestaurant);
 router

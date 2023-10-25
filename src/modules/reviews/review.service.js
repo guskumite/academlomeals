@@ -31,4 +31,13 @@ export class ReviewService {
       },
     });
   }
+
+  static async findOneReviewById(id) {
+    return await Review.findOne({
+      where: {
+        id,
+        status: 'active',
+      },
+    });
+  }
 }

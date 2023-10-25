@@ -1,7 +1,10 @@
 import { catchAsync } from '../errors/index.js';
 import { validateReview } from '../reviews/review.schema.js';
 import { ReviewService } from '../reviews/review.service.js';
-import { validateRestaurant } from './restaurant.schema.js';
+import {
+  validateRestaurant,
+  validateUpdateRestaurant,
+} from './restaurant.schema.js';
 import { RestaurantService } from './restaurant.service.js';
 
 const restaurantService = new RestaurantService();
@@ -35,9 +38,63 @@ export const findAllRestaurants = catchAsync(async (req, res, next) => {
   const restaurants = await restaurantService.findAllRestaurants();
   return res.status(200).json(restaurants);
 });
-export const findOneRestaurant = catchAsync(async (req, res, next) => {});
-export const updateRestaurant = catchAsync(async (req, res, next) => {});
-export const deleteRestaurant = catchAsync(async (req, res, next) => {});
+export const findOneRestaurant = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const restaurant = await restaurantService.findOneRestaurant(id);
+  return res.status(200).json(restaurant);
+});
+export const updateRestaurant = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const { name, address } = req.body;
+
+  // validate the name and address for errors
+
+  const { hasError, errorMessages, restaurantData } = validateUpdateRestaurant({
+    name,
+    address,
+  });
+
+  if (hasError) {
+    return res.status(422).json({
+      status: 'Error',
+      message: errorMessages,
+    });
+  }
+
+  // find the restaurant record in the db to perform the update
+
+  const foundRestaurant = await restaurantService.findOneRestaurantById(id);
+
+  const nametoUpdate = name || foundRestaurant.dataValues.name;
+  const addresstoUpdate = address || foundRestaurant.dataValues.address;
+
+  // update to the db
+
+  const updatedRestaurant = await restaurantService.updateRestaurant(
+    { name: nametoUpdate, address: addresstoUpdate },
+    id
+  );
+
+  return res.status(200).json({ nametoUpdate, addresstoUpdate });
+});
+export const deleteRestaurant = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  // find the restaurant record in the db to perform the update
+
+  const foundRestaurant = await restaurantService.findOneRestaurantById(id);
+
+  // update to the db
+
+  const deletedRestaurant = await restaurantService.updateRestaurant(
+    { status: 'disabled' },
+    id
+  );
+
+  return res.status(200).json('Successfully deleted');
+});
 export const createReviewToRestaurant = catchAsync(async (req, res, next) => {
   const { comment, rating } = req.body;
   // This is the restaurant id but comes as id when the route is typed
@@ -78,6 +135,17 @@ export const updateReview = catchAsync(async (req, res, next) => {
     foundReview.dataValues.id
   );
 
-  return res.status(200).json(review);
+  return res.status(200).json({ comment, rating });
 });
-export const deleteReview = catchAsync(async (req, res, next) => {});
+export const deleteReview = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const foundReview = await ReviewService.findOneReviewById(id);
+
+  const reviewDeleted = await ReviewService.updateReview(
+    { status: 'deleted' },
+    id
+  );
+
+  return res.status(200).json('Succesfully deleted');
+});

@@ -1,0 +1,18 @@
+import { catchAsync, AppError } from '../errors/index.js';
+import { RestaurantService } from '../restaurants/restaurant.service.js';
+
+const restaurantService = new RestaurantService();
+
+export const validExistRestaurant = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const restaurant = await restaurantService.findOneRestaurantById(id);
+
+  if (!restaurant) {
+    return next(new AppError('Restaurant not found', 404));
+  }
+
+  req.restaurant = restaurant;
+
+  next();
+});
