@@ -10,6 +10,7 @@ export const validExistReview = catchAsync(async (req, res, next) => {
     return next(new AppError('Review not found', 404));
   }
 
+  req.user = review.dataValues;
   req.review = review;
   next();
 });

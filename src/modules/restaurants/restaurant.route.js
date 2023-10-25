@@ -11,6 +11,7 @@ import {
 } from './restaurant.controller.js';
 import { validExistRestaurant } from './restaurant.middleware.js';
 import { validExistReview } from '../reviews/review.middleware.js';
+import { protect, protectAccountOwner } from '../users/auth.middleware.js';
 
 export const router = express.Router();
 
@@ -25,5 +26,17 @@ router
 router.post('/reviews/:id', validExistRestaurant, createReviewToRestaurant);
 router
   .route('/reviews/:restaurantId/:id')
-  .patch(validExistRestaurant, validExistReview, updateReview)
-  .delete(deleteReview);
+  .patch(
+    validExistRestaurant,
+    validExistReview,
+    protect,
+    protectAccountOwner,
+    updateReview
+  )
+  .delete(
+    validExistRestaurant,
+    validExistReview,
+    protect,
+    protectAccountOwner,
+    deleteReview
+  );

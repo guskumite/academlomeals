@@ -1,4 +1,5 @@
 import { catchAsync } from '../errors/index.js';
+import { validateReview } from '../reviews/review.schema.js';
 import { ReviewService } from '../reviews/review.service.js';
 import { validateRestaurant } from './restaurant.schema.js';
 import { RestaurantService } from './restaurant.service.js';
@@ -53,5 +54,30 @@ export const createReviewToRestaurant = catchAsync(async (req, res, next) => {
 
   return res.status(201).json(review);
 });
-export const updateReview = catchAsync(async (req, res, next) => {});
+export const updateReview = catchAsync(async (req, res, next) => {
+  const { comment, rating } = req.body;
+  const { review } = req;
+  const { id } = req.params;
+
+  const { hasError, errorMessages, reviewData } = validateReview(req.body);
+
+  if (hasError) {
+    return res.status(422).json({
+      status: 'Error',
+      message: errorMessages,
+    });
+  }
+
+  const foundReview = await ReviewService.findOneReview(id);
+
+  const reviewUpdated = await ReviewService.updateReview(
+    {
+      comment,
+      rating,
+    },
+    foundReview.dataValues.id
+  );
+
+  return res.status(200).json(review);
+});
 export const deleteReview = catchAsync(async (req, res, next) => {});

@@ -25,4 +25,4 @@ export async function syncUp() {
   }
 }
 
-export default sequelize
+export default sequelize;

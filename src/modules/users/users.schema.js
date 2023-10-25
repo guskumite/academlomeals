@@ -10,6 +10,7 @@ const registerUserSchema = z.object({
     .regex(/^(?=.*\d)(?=.*[!@#$%^&*]+)(?=.*[A-Z])(?=.*[a-z]).{12,}$/, {
       message: 'Please enter a valid password',
     }),
+  role: z.string(),
 });
 
 const loginUserSchema = z.object({
