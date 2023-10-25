@@ -16,4 +16,6 @@ main();
 
 app.listen(envs.PORT, () => {
   console.log(`Server running on port ${envs.PORT} 🏍🌞`);
+  const currentTime = new Date();
+  console.log('Date and time / Fecha y hora actual:', currentTime);
 });

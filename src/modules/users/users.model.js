@@ -21,7 +21,7 @@ const User = sequelize.define(
       unique: true,
     },
     password: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(150),
       allowNull: false,
     },
     status: {
@@ -33,6 +33,11 @@ const User = sequelize.define(
       type: DataTypes.ENUM('normal', 'admin'),
       defaultValue: 'normal',
       allowNull: false,
+    },
+    changedPasswordAt: {
+      type: DataTypes.DATE,
+      defaultValue: new Date(),
+      allowNull: true,
     },
   },
   {
