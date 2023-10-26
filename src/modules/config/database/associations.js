@@ -2,6 +2,7 @@ import Restaurant from '../../restaurants/restaurant.model.js';
 import Review from '../../reviews/review.model.js';
 import User from '../../users/users.model.js';
 import Meal from '../../meals/meal.model.js';
+import Order from '../../orders/order.model.js';
 
 export const initModel = () => {
   User.hasMany(Review, {
@@ -30,5 +31,25 @@ export const initModel = () => {
   Meal.belongsTo(Restaurant, {
     foreignKey: 'restaurantId',
     as: 'MealToRestaurant',
+  });
+
+  User.hasMany(Order, {
+    foreignKey: 'userId',
+    as: 'UserToOrders',
+  });
+
+  Order.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'OrderToUser',
+  });
+
+  Meal.hasMany(Order, {
+    foreignKey: 'mealId',
+    as: 'MealToOrders',
+  });
+
+  Order.belongsTo(Meal, {
+    foreignKey: 'mealId',
+    as: 'OrderToMeal',
   });
 };

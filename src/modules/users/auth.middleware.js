@@ -55,6 +55,7 @@ export const protect = catchAsync(async (req, res, next) => {
 
   //6. adjuntar el usuario en session, el usuario en session es el usuario dueño del token
   req.sessionUser = user;
+
   next();
 });
 

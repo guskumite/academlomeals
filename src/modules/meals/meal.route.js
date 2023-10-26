@@ -2,7 +2,7 @@ import express from 'express';
 import {
   createMeal,
   findAllMeals,
-  findOneMeal,
+  findUniqueMeal,
   updateMeal,
   deleteMeal,
 } from './meal.controller.js';
@@ -20,6 +20,6 @@ router.route('/').get(findAllMeals);
 router
   .route('/:id')
   .post(protect, restrictTo('admin'), validExistRestaurant, createMeal)
-  .get(findOneMeal)
+  .get(findUniqueMeal)
   .patch(protect, restrictTo('admin'), updateMeal)
   .delete(protect, restrictTo('admin'), deleteMeal);
