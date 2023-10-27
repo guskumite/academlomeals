@@ -1,16 +1,24 @@
 import Order from './order.model.js';
 import Meal from '../meals/meal.model.js';
+import Restaurant from '../restaurants/restaurant.model.js';
 
 export class OrderService {
-  async findAllOrders() {
+  async findAllOrders(id) {
     return await Order.findAll({
       where: {
         status: 'active',
+        userId: id,
       },
       include: [
         {
           model: Meal,
           as: 'OrderToMeal',
+          include: [
+            {
+              model: Restaurant,
+              as: 'MealToRestaurant',
+            },
+          ],
         },
       ],
     });
@@ -26,6 +34,12 @@ export class OrderService {
         {
           model: Meal,
           as: 'OrderToMeal',
+          include: [
+            {
+              model: Restaurant,
+              as: 'MealToRestaurant',
+            },
+          ],
         },
       ],
     });
@@ -50,6 +64,18 @@ export class OrderService {
         status: 'active',
         id,
       },
+      include: [
+        {
+          model: Meal,
+          as: 'OrderToMeal',
+          include: [
+            {
+              model: Restaurant,
+              as: 'MealToRestaurant',
+            },
+          ],
+        },
+      ],
     });
   }
 }

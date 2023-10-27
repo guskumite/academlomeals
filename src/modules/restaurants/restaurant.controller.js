@@ -67,6 +67,10 @@ export const updateRestaurant = catchAsync(async (req, res, next) => {
 
   const foundRestaurant = await restaurantService.findOneRestaurantById(id);
 
+  if (!foundRestaurant) {
+    return next(new AppError(`Restaurant with id: ${id} not found!`, 404));
+  }
+
   const nametoUpdate = name || foundRestaurant.dataValues.name;
   const addresstoUpdate = address || foundRestaurant.dataValues.address;
 
@@ -85,6 +89,10 @@ export const deleteRestaurant = catchAsync(async (req, res, next) => {
   // find the restaurant record in the db to perform the update
 
   const foundRestaurant = await restaurantService.findOneRestaurantById(id);
+
+  if (!foundRestaurant) {
+    return next(new AppError(`Restaurant with id: ${id} not found!`, 404));
+  }
 
   // update to the db
 
@@ -127,6 +135,10 @@ export const updateReview = catchAsync(async (req, res, next) => {
 
   const foundReview = await ReviewService.findOneReview(id);
 
+  if (!foundReview) {
+    return next(new AppError(`Review with id: ${id} not found!`, 404));
+  }
+
   const reviewUpdated = await ReviewService.updateReview(
     {
       comment,
@@ -141,6 +153,10 @@ export const deleteReview = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const foundReview = await ReviewService.findOneReviewById(id);
+
+  if (!foundReview) {
+    return next(new AppError(`Review with id: ${id} not found!`, 404));
+  }
 
   const reviewDeleted = await ReviewService.updateReview(
     { status: 'deleted' },

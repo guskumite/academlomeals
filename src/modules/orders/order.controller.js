@@ -7,7 +7,9 @@ const mealService = new MealService();
 const orderService = new OrderService();
 
 export const findAllOrders = catchAsync(async (req, res, next) => {
-  const orders = await orderService.findAllOrders();
+  const { id } = req.sessionUser;
+  console.log(typeof id);
+  const orders = await orderService.findAllOrders(id);
   return res.status(200).json(orders);
 });
 
@@ -26,7 +28,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
   const meal = await mealService.findOneMeal(mealId);
 
   if (!meal) {
-    return next(new AppError(`Meal with id: ${mealId} not found!`));
+    return next(new AppError(`Meal with id: ${mealId} not found!`, 404));
   }
 
   const { sessionUser } = req;
@@ -58,13 +60,49 @@ export const createOrder = catchAsync(async (req, res, next) => {
 });
 
 export const findOneOrderById = catchAsync(async (req, res, next) => {
-  return res.status(200).json(/* valor a retornar */);
+  const { id } = req.params;
+
+  const foundOrder = await orderService.findOneOrderById(id);
+
+  if (!foundOrder) {
+    return next(new AppError(`Order with id: ${id} not found!`, 404));
+  }
+
+  return res.status(200).json(foundOrder);
 });
 
 export const updateOrder = catchAsync(async (req, res, next) => {
-  return res.status(200).json(/* valor a retornar */);
+  // It is necessary to validate that the order exists with status active before procceding to update it
+
+  const { id } = req.params;
+
+  const foundOrder = await orderService.findOneOrderById(id);
+
+  if (!foundOrder) {
+    return next(new AppError(`Order with id: ${id} not found!`, 404));
+  }
+
+  foundOrder.status = 'completed';
+
+  const updatedOrder = await orderService.updateOrder(foundOrder, id);
+
+  return res.status(200).json(foundOrder);
 });
 
 export const deleteOrder = catchAsync(async (req, res, next) => {
-  return res.status(200).json(/* valor a retornar */);
+  // It is necessary to validate that the order exists with status active before procceding to delete it
+
+  const { id } = req.params;
+
+  const foundOrder = await orderService.findOneOrderById(id);
+
+  if (!foundOrder) {
+    return next(new AppError(`Order with id: ${id} not found!`, 404));
+  }
+
+  foundOrder.status = 'cancelled';
+
+  const updatedOrder = await orderService.updateOrder(foundOrder, id);
+
+  return res.status(200).json(`Succesfully cancelled order: ${id}`);
 });

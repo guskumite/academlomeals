@@ -51,7 +51,7 @@ const deleteUserSchema = z.object({
 });
 
 export const validateRegister = (data) => {
-  const result = registerUserSchema.safeParse(data);
+  const result = registerUserSchema.partial().safeParse(data);
 
   const {
     hasError,

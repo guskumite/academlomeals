@@ -32,7 +32,7 @@ export const createMeal = catchAsync(async (req, res, next) => {
   const restaurant = await restaurantService.findOneRestaurantById(id);
 
   if (!restaurant) {
-    return next(new AppError(`restaurant with id: ${id} not found!`));
+    return next(new AppError(`restaurant with id: ${id} not found!`, 404));
   }
 
   mealData.restaurantId = restaurant.dataValues.id;
@@ -48,7 +48,7 @@ export const findUniqueMeal = catchAsync(async (req, res, next) => {
   const meal = await mealService.findOneMeal(id);
 
   if (!meal) {
-    return next(new AppError(`meal with id: ${id} not found!`));
+    return next(new AppError(`meal with id: ${id} not found!`, 404));
   }
 
   return res.status(200).json(meal);
@@ -78,7 +78,7 @@ export const updateMeal = catchAsync(async (req, res, next) => {
   const foundMeal = await mealService.findOneMeal(id);
 
   if (!foundMeal) {
-    return next(new AppError(`Meal with id: ${id} not found!`));
+    return next(new AppError(`Meal with id: ${id} not found!`, 404));
   }
 
   const nametoUpdate = name || foundMeal.dataValues.name;
@@ -102,7 +102,7 @@ export const deleteMeal = catchAsync(async (req, res, next) => {
   const foundMeal = await mealService.findOneMeal(id);
 
   if (!foundMeal) {
-    return next(new AppError(`Meal with id: ${id} not found!`));
+    return next(new AppError(`Meal with id: ${id} not found!`, 404));
   }
 
   // update to the db

@@ -56,6 +56,24 @@ export const protect = catchAsync(async (req, res, next) => {
   //6. adjuntar el usuario en session, el usuario en session es el usuario dueño del token
   req.sessionUser = user;
 
+  const { email } = req.body;
+  let founduser;
+  let foundUser;
+  if (email) {
+    foundUser = await userservice.findUserByEmail(email);
+    if (!foundUser) {
+      return next(new AppError('User email not sent', 422));
+    }
+  } else {
+    const id = user.dataValues.id;
+    founduser = await userservice.findOneUserById(id);
+    if (!founduser) {
+      return next(new AppError('User not found by id', 422));
+    }
+  }
+
+  req.user = foundUser || founduser;
+
   next();
 });
 
