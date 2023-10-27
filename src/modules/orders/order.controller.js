@@ -8,7 +8,6 @@ const orderService = new OrderService();
 
 export const findAllOrders = catchAsync(async (req, res, next) => {
   const { id } = req.sessionUser;
-  console.log(typeof id);
   const orders = await orderService.findAllOrders(id);
   return res.status(200).json(orders);
 });
@@ -82,9 +81,12 @@ export const updateOrder = catchAsync(async (req, res, next) => {
     return next(new AppError(`Order with id: ${id} not found!`, 404));
   }
 
-  foundOrder.status = 'completed';
+  const updatedOrder = await orderService.updateOrder(
+    { status: 'completed' },
+    id
+  );
 
-  const updatedOrder = await orderService.updateOrder(foundOrder, id);
+  foundOrder.dataValues.status = 'completed';
 
   return res.status(200).json(foundOrder);
 });
@@ -102,7 +104,10 @@ export const deleteOrder = catchAsync(async (req, res, next) => {
 
   foundOrder.status = 'cancelled';
 
-  const updatedOrder = await orderService.updateOrder(foundOrder, id);
+  const updatedOrder = await orderService.updateOrder(
+    { status: 'cancelled' },
+    id
+  );
 
   return res.status(200).json(`Succesfully cancelled order: ${id}`);
 });

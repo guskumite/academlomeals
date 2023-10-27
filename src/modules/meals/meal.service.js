@@ -1,4 +1,5 @@
 import Meal from '../meals/meal.model.js';
+import Restaurant from '../restaurants/restaurant.model.js';
 
 export class MealService {
   async findAllMeals() {
@@ -6,6 +7,12 @@ export class MealService {
       where: {
         status: 'active',
       },
+      include: [
+        {
+          model: Restaurant,
+          as: 'MealToRestaurant',
+        },
+      ],
     });
   }
 
@@ -28,6 +35,12 @@ export class MealService {
         status: 'active',
         id,
       },
+      include: [
+        {
+          model: Restaurant,
+          as: 'MealToRestaurant',
+        },
+      ],
     });
   }
 }

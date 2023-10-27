@@ -1,4 +1,4 @@
-import { catchAsync } from '../errors/index.js';
+import { catchAsync, AppError } from '../errors/index.js';
 import { RestaurantService } from './restaurant.service.js';
 
 const restaurantService = new RestaurantService();
